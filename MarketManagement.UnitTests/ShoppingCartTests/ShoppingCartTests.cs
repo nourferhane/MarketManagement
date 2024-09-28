@@ -149,5 +149,28 @@ namespace MarketManagement.Domain.UnitTests.ShoppingCartTests
             Assert.Equal(expectedDiscountValue, discountAmount);
             Assert.Equal(expectedCartAmoutAfterediscount, totalAfterDiscount);
         }
+
+
+        [Fact]
+        public void ShoppingCarteApplyDiscount_WhenMultipleBundleDiscount_ShouldApplDiscounts()
+        {
+            // Arrange
+            ShoppingCart cart = new();
+            Product productToadd = new(1, "Test", 10);
+            cart.AddProductToCart(productToadd, 20);
+            cart.AddDiscountRules([new BundleOneEuroDiscount()]);
+
+            var expectedDiscountValue = 2;
+            var expectedCartAmoutBeforediscount = 200;
+            var expectedCartAmoutAfterediscount = 198;
+            // Act
+            var cartTotal = cart.GetTotalBeforeDiscount();
+            var discountAmount = cart.GetDiscountsAmount();
+            var totalAfterDiscount = cart.GetTotalBeforeDiscount() - cart.GetDiscountsAmount();
+            // Assert
+            Assert.Equal(expectedCartAmoutBeforediscount, cartTotal);
+            Assert.Equal(expectedDiscountValue, discountAmount);
+            Assert.Equal(expectedCartAmoutAfterediscount, totalAfterDiscount);
+        }
     }
 }

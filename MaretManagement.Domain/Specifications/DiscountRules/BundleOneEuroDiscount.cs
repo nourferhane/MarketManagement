@@ -20,7 +20,7 @@ public class BundleOneEuroDiscount : IPricingDiscountRule
             var productQuantity = shoppingCart.GetProductQuantity(item.ProductId);
             if(productQuantity >= _minimumQuantity)
             {
-                totalSumDiscount +=1;
+                totalSumDiscount += productQuantity / 10;
             }
         }
         return Amount.AmountFor(totalSumDiscount);
