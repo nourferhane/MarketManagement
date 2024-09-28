@@ -1,0 +1,82 @@
+name: MarketManagement
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      Solution_Name: MarketManagement.sln  
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Install dependencies
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    - name: Build solution
+      run: dotnet build ${{ env.Solution_Name }} --configuration Release
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Run tests
+      run: dotnet test ${{ env.Solution_Name }}
+
+  publish-and-deploy:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Publish exe file
+      run: |
+        dotnet publish MarketManagement/MarketManagement.csproj -r win-x86 -p:PublishSingleFile=true --self-contained false --output ./MarketManagement/publish
+
+    - name: Verify publish directory
+      run: ls -la ./MarketManagement/publish
+
+    - name: Set release date
+      run: echo "RELEASE_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
+
+    - name: Deploy exe file to repo
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: deploy 
+        FOLDER: MarketManagement/publish
+        commit-message: "Release Commit - ${{ env.RELEASE_DATE }}"
+        force: true
