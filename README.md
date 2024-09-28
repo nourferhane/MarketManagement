@@ -12,15 +12,13 @@ Market Management est une application de gestion d'un supermarché, permettant l
 L'application suit les principes du **Domain-Driven Design (DDD)** :
 
 - **Domain** : Contient les entités, les agrégats, les objets de valeur, ainsi que les règles métier.
-- **Application** : Contient les services d'application pour orchestrer les interactions entre les composants.
-- **Infrastructure** : Implémente les services d'infrastructure, comme le stockage et la gestion des événements.
+- **Infrastructure** : Implémente les services d'infrastructure, comme le stockage .
 
 ### 📂 Structure
 
 - `Domain` : Contient la logique métier, les agrégats et les règles de domaine.
-- `Application` : Gère la logique applicative et les interactions avec les domaines.
+- `Application` : Gère la logique applicative et les interactions avec les domaines(app console).
 - `Infrastructure` : Gère les services techniques tels que les repositories.
-- `Presentation` : Contient l'interface utilisateur ou les APIs exposées.
 
 ### 📖 Repository Pattern
 
